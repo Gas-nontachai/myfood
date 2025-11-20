@@ -1,0 +1,6 @@
+version: 1
+jobs:
+  - name: nightly-maintenance
+    schedule: "0 4 * * *"
+    function: log-heartbeat
+    comment: "Ping monitoring and warm edge function caches"

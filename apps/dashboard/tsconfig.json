@@ -1,0 +1,39 @@
+{
+  "extends": "../../packages/shared-config/tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "@myfood/shared-ui/*": [
+        "../../packages/shared-ui/src/*"
+      ],
+      "@myfood/shared-utils/*": [
+        "../../packages/shared-utils/src/*"
+      ],
+      "@myfood/shared-types/*": [
+        "../../packages/shared-types/src/*"
+      ]
+    },
+    "types": [
+      "jest",
+      "node"
+    ],
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

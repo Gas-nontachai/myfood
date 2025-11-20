@@ -1,0 +1,48 @@
+{
+  "name": "myfood",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Multi-app restaurant system monorepo (customer, POS, admin dashboard).",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "lint": "turbo lint",
+    "test": "turbo test",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,css,scss}\"",
+    "prepare": "husky install",
+    "storybook": "turbo run storybook --filter=@myfood/shared-ui",
+    "lint:staged": "lint-staged"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^18.6.0",
+    "@commitlint/config-conventional": "^18.6.0",
+    "@testing-library/jest-dom": "^6.2.0",
+    "@testing-library/react": "^14.2.1",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^20.10.6",
+    "commitlint": "^18.6.0",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^8.0.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "lint-staged": "^14.0.1",
+    "prettier": "^3.1.1",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
+    "turbo": "^1.10.16",
+    "typescript": "^5.3.3"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@types/react",
+        "@types/react-dom"
+      ]
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": "pnpm exec eslint --fix",
+    "*.{md,json,yml,yaml,css,scss,ts,tsx,js,jsx}": "pnpm exec prettier --write"
+  }
+}

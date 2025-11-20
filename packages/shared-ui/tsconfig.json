@@ -1,0 +1,10 @@
+{
+  "extends": "../shared-config/tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "paths": {
+      "@myfood/shared-ui/*": ["./src/*"]
+    }
+  },
+  "include": ["src", ".storybook"]
+}

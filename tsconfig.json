@@ -1,0 +1,11 @@
+{
+  "extends": "./packages/shared-config/tsconfig.base.json",
+  "compilerOptions": {
+    "paths": {
+      "@myfood/shared-ui/*": ["packages/shared-ui/src/*"],
+      "@myfood/shared-utils/*": ["packages/shared-utils/src/*"],
+      "@myfood/shared-types/*": ["packages/shared-types/src/*"]
+    }
+  },
+  "include": ["apps", "packages"]
+}

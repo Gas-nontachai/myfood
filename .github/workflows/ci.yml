@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.16
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build customer
+        run: pnpm --filter @myfood/customer build
+
+      - name: Build pos
+        run: pnpm --filter @myfood/pos build
+
+      - name: Build admin dashboard
+        run: pnpm --filter @myfood/dashboard build
+
+      - name: Prepare customer env
+        if: github.ref == 'refs/heads/main'
+        run: npx vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_CUSTOMER }}
+
+      - name: Build customer (vercel)
+        if: github.ref == 'refs/heads/main'
+        run: npx vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_CUSTOMER }}
+
+      - name: Deploy customer to Vercel
+        if: github.ref == 'refs/heads/main'
+        run: npx vercel deploy --prebuilt --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_CUSTOMER }}
+
+      - name: Prepare pos env
+        if: github.ref == 'refs/heads/main'
+        run: npx vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_POS }}
+
+      - name: Build pos (vercel)
+        if: github.ref == 'refs/heads/main'
+        run: npx vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_POS }}
+
+      - name: Deploy pos to Vercel
+        if: github.ref == 'refs/heads/main'
+        run: npx vercel deploy --prebuilt --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_POS }}
+
+      - name: Prepare admin env
+        if: github.ref == 'refs/heads/main'
+        run: npx vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}
+
+      - name: Build admin (vercel)
+        if: github.ref == 'refs/heads/main'
+        run: npx vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}
+
+      - name: Deploy admin to Vercel
+        if: github.ref == 'refs/heads/main'
+        run: npx vercel deploy --prebuilt --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}

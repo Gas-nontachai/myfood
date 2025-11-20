@@ -1,0 +1,38 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "outputs": []
+    },
+    "test": {
+      "outputs": [
+        "coverage/**"
+      ]
+    },
+    "build": {
+      "dependsOn": [
+        "^build",
+        "^lint",
+        "^test"
+      ],
+      "outputs": [
+        "apps/**/.next/**",
+        "apps/**/build/**",
+        "packages/**/dist/**"
+      ]
+    },
+    "storybook": {
+      "dependsOn": [
+        "^build"
+      ],
+      "cache": false,
+      "outputs": [
+        "packages/shared-ui/storybook-static/**"
+      ]
+    }
+  }
+}

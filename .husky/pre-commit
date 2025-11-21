@@ -1,4 +1,20 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+set -euo pipefail
+
 pnpm lint:staged
+
+pnpm lint
+pnpm test
+
+pnpm --filter @myfood/customer build
+pnpm --filter @myfood/pos build
+
+if [ -f .env ]; then
+  set -a
+  . .env
+  set +a
+fi
+
+pnpm --filter @myfood/dashboard build

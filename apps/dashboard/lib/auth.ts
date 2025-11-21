@@ -8,7 +8,6 @@ import {
 } from '@supabase/auth-helpers-nextjs';
 import type { Database } from '@myfood/shared-types';
 import { createAdminClient } from './supabaseAdmin';
-import { AUTH_COOKIE_KEYS } from './constants/authCookies';
 import { usernameToEmail } from './utils/authHelpers';
 
 type PermissionPayload = {
@@ -128,17 +127,13 @@ export async function loginAction(formData: FormData) {
 }
 
 export async function logoutAction() {
-  const { cookieStore, cookieAccessor } = await getCookieContext();
+  const { cookieAccessor } = await getCookieContext();
 
   const supabase = createServerActionClient<Database>({
     cookies: cookieAccessor,
   });
 
   await supabase.auth.signOut();
-
-  for (const name of Object.values(AUTH_COOKIE_KEYS)) {
-    cookieStore.delete(name);
-  }
 
   redirect('/login');
 }

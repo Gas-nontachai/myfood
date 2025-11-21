@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import './globals.css';
@@ -5,6 +6,8 @@ import { Breadcrumbs } from '@myfood/shared-ui';
 import { AuthStateProvider } from '../components/AuthStateProvider';
 import { LogoutButton } from '../components/LogoutButton';
 import { AdminHeaderProfile } from '../components/AdminHeaderProfile';
+import { createAdminClient } from '../lib/supabaseAdmin';
+import { loadCurrentUser } from '../lib/auth';
 
 export const metadata: Metadata = {
   title: 'แดชบอร์ดผู้ดูแลระบบ MyFood',
@@ -25,7 +28,31 @@ const dashboardBreadcrumbLabels = {
   '/users/[id]/edit': 'แก้ไขผู้ใช้ POS'
 };
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const currentUser = await loadCurrentUser();
+  let roleName: string | null = null;
+
+  if (currentUser) {
+    const profile = currentUser.profile;
+    if (!profile || profile.status !== 'active') {
+      redirect('/dashboard/account-disabled');
+    }
+
+    if (profile.role_primary) {
+      const admin = createAdminClient();
+      const { data: role } = await admin
+        .from('roles')
+        .select('name')
+        .eq('id', profile.role_primary)
+        .maybeSingle();
+      roleName = role?.name ?? null;
+    }
+
+    if (roleName !== 'admin') {
+      redirect('/dashboard/no-access');
+    }
+  }
+
   return (
     <html lang="th">
       <body className="min-h-screen bg-slate-50 text-slate-900 antialiased">
@@ -34,7 +61,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-slate-500">MyFood</p>
               <h1 className="text-3xl font-semibold text-slate-900">ศูนย์ควบคุมแอดมิน</h1>
-              <AdminHeaderProfile />
+              <AdminHeaderProfile currentUser={currentUser} roleName={roleName} />
             </div>
             <LogoutButton />
           </header>
@@ -44,7 +71,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             rootHref="/dashboard"
             className="mb-6"
           />
-          <AuthStateProvider>{children}</AuthStateProvider>
+          <AuthStateProvider initialUser={currentUser}>{children}</AuthStateProvider>
         </div>
       </body>
     </html>

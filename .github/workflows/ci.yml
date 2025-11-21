@@ -12,6 +12,7 @@ jobs:
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,15 +36,35 @@ jobs:
       - name: Test
         run: pnpm test
 
+      # ---------------------------
+      # Customer Build
+      # ---------------------------
       - name: Build customer
         run: pnpm --filter @myfood/customer build
 
+      # ---------------------------
+      # POS Build
+      # ---------------------------
       - name: Build pos
         run: pnpm --filter @myfood/pos build
 
+      # ---------------------------
+      # Dashboard Build (FIXED)
+      # ---------------------------
       - name: Build admin dashboard
         run: pnpm --filter @myfood/dashboard build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          SUPABASE_JWT_SECRET: ${{ secrets.SUPABASE_JWT_SECRET }}
+          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
+          APP_ENV: ${{ secrets.APP_ENV }}
 
+      # ---------------------------
+      # Customer Deploy
+      # ---------------------------
       - name: Prepare customer env
         if: github.ref == 'refs/heads/main'
         run: npx vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
@@ -62,6 +83,9 @@ jobs:
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_CUSTOMER }}
 
+      # ---------------------------
+      # POS Deploy
+      # ---------------------------
       - name: Prepare pos env
         if: github.ref == 'refs/heads/main'
         run: npx vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
@@ -80,6 +104,9 @@ jobs:
         env:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_POS }}
 
+      # ---------------------------
+      # Admin Dashboard Deploy
+      # ---------------------------
       - name: Prepare admin env
         if: github.ref == 'refs/heads/main'
         run: npx vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}

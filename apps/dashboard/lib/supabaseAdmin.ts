@@ -1,15 +1,20 @@
 import { createClient } from '@supabase/supabase-js';
-import type { Database } from '@myfood/shared-types';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
-const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+function getAdminConfig() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!supabaseUrl || !serviceRoleKey) {
-  throw new Error('Missing Supabase URL or Service Role Key for admin client');
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error('Missing Supabase URL or Service Role Key for admin client');
+  }
+
+  return { supabaseUrl, serviceRoleKey };
 }
 
 export function createAdminClient() {
-  return createClient<Database>(supabaseUrl, serviceRoleKey, {
+  const { supabaseUrl, serviceRoleKey } = getAdminConfig();
+
+  return createClient(supabaseUrl, serviceRoleKey, {
     auth: {
       persistSession: false
     },

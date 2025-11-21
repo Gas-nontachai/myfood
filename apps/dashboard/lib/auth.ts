@@ -1,10 +1,11 @@
- 'use server';
-
- 'use server';
+'use server';
 
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
+import {
+  createServerActionClient,
+  createServerComponentClient,
+} from '@supabase/auth-helpers-nextjs';
 import type { Database } from '@myfood/shared-types';
 import { createAdminClient } from './supabaseAdmin';
 import { AUTH_COOKIE_KEYS } from './constants/authCookies';
@@ -31,6 +32,15 @@ export type SessionWithAuth = {
   permissions: PermissionPayload;
 };
 
+async function getCookieContext() {
+  const cookieStore = await cookies();
+  return {
+    cookieStore,
+    cookieAccessor: () =>
+      cookieStore as unknown as ReturnType<typeof cookies>,
+  };
+}
+
 async function fetchProfile(userId: string) {
   const admin = createAdminClient();
   const { data, error } = await admin
@@ -38,40 +48,49 @@ async function fetchProfile(userId: string) {
     .select('user_id, username, full_name, role_primary, status, created_at')
     .eq('user_id', userId)
     .maybeSingle();
-  if (error) {
-    throw new Error(error.message);
-  }
+
+  if (error) throw new Error(error.message);
   return data;
 }
 
 async function fetchPermissions(userId: string): Promise<PermissionPayload> {
   const admin = createAdminClient();
-  const { data, error } = await admin.rpc('get_user_permissions', { uid: userId });
-  if (error) {
-    throw new Error(error.message);
-  }
+  const { data, error } = await admin.rpc('get_user_permissions', {
+    uid: userId,
+  });
+
+  if (error) throw new Error(error.message);
+
   return {
     roles: Array.isArray(data?.roles) ? data.roles.filter(Boolean) : [],
-    permissions: Array.isArray(data?.permissions) ? data.permissions.filter(Boolean) : []
+    permissions: Array.isArray(data?.permissions)
+      ? data.permissions.filter(Boolean)
+      : [],
   };
 }
 
 export async function loadCurrentUser(): Promise<SessionWithAuth | null> {
-  const cookieStore = await cookies();
-  const supabase = createServerActionClient<Database>({
-    cookies: () => cookieStore
+  const { cookieAccessor } = await getCookieContext();
+
+  const supabase = createServerComponentClient<Database>({
+    cookies: cookieAccessor,
   });
+
   const { data } = await supabase.auth.getSession();
-  if (!data.session) {
-    return null;
-  }
+  if (!data.session) return null;
+
   const { user } = data.session;
-  const [profile, permissions] = await Promise.all([fetchProfile(user.id), fetchPermissions(user.id)]);
+
+  const [profile, permissions] = await Promise.all([
+    fetchProfile(user.id),
+    fetchPermissions(user.id),
+  ]);
+
   return {
     userId: user.id,
     email: user.email ?? '',
     profile,
-    permissions
+    permissions,
   };
 }
 
@@ -81,17 +100,24 @@ export async function loginAction(formData: FormData) {
   const redirectTo = (formData.get('redirectTo') ?? '/dashboard').toString();
 
   if (!username || !password) {
-    redirect(`/login?error=${encodeURIComponent('โปรดกรอกชื่อผู้ใช้และรหัสผ่าน')}`);
+    redirect(
+      `/login?error=${encodeURIComponent(
+        'โปรดกรอกชื่อผู้ใช้และรหัสผ่าน'
+      )}`
+    );
   }
 
-  const cookieStore = await cookies();
+  const { cookieAccessor } = await getCookieContext();
+
   const supabase = createServerActionClient<Database>({
-    cookies: () => cookieStore
+    cookies: cookieAccessor,
   });
+
   const email = usernameToEmail(username);
+
   const { error } = await supabase.auth.signInWithPassword({
     email,
-    password
+    password,
   });
 
   if (error) {
@@ -102,11 +128,17 @@ export async function loginAction(formData: FormData) {
 }
 
 export async function logoutAction() {
-  const cookieStore = await cookies();
+  const { cookieStore, cookieAccessor } = await getCookieContext();
+
   const supabase = createServerActionClient<Database>({
-    cookies: () => cookieStore
+    cookies: cookieAccessor,
   });
+
   await supabase.auth.signOut();
-  Object.values(AUTH_COOKIE_KEYS).forEach((name) => cookieStore.delete(name));
+
+  for (const name of Object.values(AUTH_COOKIE_KEYS)) {
+    cookieStore.delete(name);
+  }
+
   redirect('/login');
 }

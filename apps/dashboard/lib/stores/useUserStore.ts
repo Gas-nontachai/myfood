@@ -16,7 +16,7 @@ export type UserState = {
   can: (permission: string) => boolean;
 };
 
-export const useUserStore = create<UserState>((set) => ({
+export const useUserStore = create<UserState>((set, get) => ({
   userId: null,
   username: null,
   fullName: null,
@@ -45,7 +45,7 @@ export const useUserStore = create<UserState>((set) => ({
     })),
   can: (permission) => {
     if (!permission) return false;
-    return useUserStore.getState().permissions.includes(permission);
+    return get().permissions.includes(permission);
   }
 }));
 

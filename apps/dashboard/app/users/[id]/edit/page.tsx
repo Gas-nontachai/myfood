@@ -2,9 +2,9 @@ import Link from 'next/link';
 import { Button, Card, Checkbox, Input } from '@myfood/shared-ui';
 
 interface UserEditProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 const permissionOptions = [
@@ -20,18 +20,19 @@ const roleDescriptions: Record<string, string> = {
   staff: 'จัดการออเดอร์และยืนยันการชำระเงิน'
 };
 
-export default function EditUserPage({ params }: UserEditProps) {
+export default async function EditUserPage({ params }: UserEditProps) {
+  const { id } = await params;
   return (
     <main className="space-y-8">
       <section>
         <p className="text-xs uppercase tracking-[0.3em] text-slate-400">แก้ไขผู้ใช้</p>
-        <h1 className="text-3xl font-semibold text-slate-900">จัดการบัญชี ID: {params.id}</h1>
+        <h1 className="text-3xl font-semibold text-slate-900">จัดการบัญชี ID: {id}</h1>
         <p className="text-sm text-slate-600">ปรับบทบาทและสิทธิ์ตามตำแหน่งงานจริง</p>
       </section>
 
       <Card className="space-y-5">
         <form className="space-y-4">
-          <Input label="ชื่อผู้ใช้" defaultValue={`pos_user_${params.id}`} />
+          <Input label="ชื่อผู้ใช้" defaultValue={`pos_user_${id}`} />
           <Input label="บทบาท" placeholder="ผู้จัดการ" helperText={roleDescriptions.manager} />
           <Input label="อีเมลแจ้งเตือน" type="email" placeholder="manager@example.com" />
           <Input label="รหัสผ่านใหม่" type="password" placeholder="••••••••" />

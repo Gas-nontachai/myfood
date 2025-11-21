@@ -45,6 +45,26 @@ const MENU_SECTIONS: MenuSection[] = [
           (!!path?.startsWith('/dashboard/users/') && !path?.startsWith('/dashboard/users/create'))
       }
     ]
+  },
+  {
+    title: 'จัดการสิทธิ์',
+    description: 'กำหนดบทบาทและสิทธิ์การเข้าถึง',
+    items: [
+      {
+        label: 'บทบาทผู้ใช้งาน',
+        href: '/dashboard/roles',
+        description: 'จัดการกลุ่มหน้าที่และความรับผิดชอบ',
+        match: (path) =>
+          path === '/dashboard/roles' || !!path?.startsWith('/dashboard/roles/')
+      },
+      {
+        label: 'สิทธิ์การใช้งาน',
+        href: '/dashboard/permissions',
+        description: 'จัดการสิทธิ์รายย่อยในระบบ',
+        match: (path) =>
+          path === '/dashboard/permissions' || !!path?.startsWith('/dashboard/permissions/')
+      }
+    ]
   }
 ];
 
@@ -54,6 +74,12 @@ const breadcrumbLabels = {
   '/dashboard/users/create': 'สร้างผู้ใช้ใหม่',
   '/dashboard/users/[id]': 'โปรไฟล์ผู้ใช้',
   '/dashboard/users/[id]/edit': 'แก้ไขบัญชี',
+  '/dashboard/roles': 'บทบาทผู้ใช้งาน',
+  '/dashboard/roles/create': 'สร้างบทบาทใหม่',
+  '/dashboard/roles/[id]/edit': 'แก้ไขบทบาท',
+  '/dashboard/permissions': 'สิทธิ์การใช้งาน',
+  '/dashboard/permissions/create': 'สร้างสิทธิ์ใหม่',
+  '/dashboard/permissions/[id]/edit': 'แก้ไขสิทธิ์',
   '/dashboard/no-access': 'สิทธิ์ไม่เพียงพอ',
   '/dashboard/login': 'เข้าสู่ระบบแอดมิน',
   '/account-disabled': 'บัญชีถูกระงับ',

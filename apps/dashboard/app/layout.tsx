@@ -5,7 +5,7 @@ import './globals.css';
 import { createAdminClient } from '../lib/supabaseAdmin';
 import { loadCurrentUser } from '../lib/auth';
 import { DashboardShell } from '../components/DashboardShell';
-import { headers } from 'next/headers';
+
 
 export const metadata: Metadata = {
   title: 'แดชบอร์ดผู้ดูแลระบบ MyFood',
@@ -16,7 +16,6 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const currentUser = await loadCurrentUser();
-  const headerList = headers();
   let roleName: string | null = null;
 
   if (currentUser) {

@@ -4,5 +4,6 @@ export * from './components/checkbox';
 export * from './components/dialog';
 export * from './components/input';
 export * from './components/toast';
+export * from './components/breadcrumbs';
 export * from './themes';
 export * from './lib/utils';

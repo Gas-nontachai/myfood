@@ -1,9 +1,9 @@
-import Link from 'next/link';
-import { Button, Card } from '@myfood/shared-ui';
+import { Card } from '@myfood/shared-ui';
+import { LogoutButton } from '../../components/LogoutButton';
 
 export default function DashboardNoAccessPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4 py-12">
+    <main className="flex min-h-screen items-start justify-center bg-slate-50 px-4 py-12">
       <Card className="w-full max-w-xl space-y-6 text-center">
         <p className="text-xs uppercase tracking-[0.4em] text-slate-400">สิทธิ์ไม่เพียงพอ</p>
         <div className="space-y-3">
@@ -17,12 +17,7 @@ export default function DashboardNoAccessPage() {
           <p>• ตรวจสอบว่าได้ตั้งค่า MFA หรือการยืนยันตัวตนครบถ้วน</p>
         </div>
         <div className="flex flex-wrap justify-center gap-3">
-          <Button asChild>
-            <Link href="/login">กลับหน้าล็อกอิน</Link>
-          </Button>
-          <Button intent="secondary" asChild>
-            <Link href="/reset-password">ขอรีเซ็ตรหัสผ่าน</Link>
-          </Button>
+          <LogoutButton />
         </div>
       </Card>
     </main>

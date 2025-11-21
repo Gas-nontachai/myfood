@@ -2,7 +2,7 @@ import { Button, Card, Input } from '@myfood/shared-ui';
 
 export default function PosLoginPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-slate-50 py-12">
+    <main className="flex min-h-screen items-start justify-center bg-slate-50 py-12">
       <Card className="w-full max-w-md space-y-6">
         <div className="space-y-2 text-center">
           <p className="text-xs uppercase tracking-[0.4em] text-slate-400">โต๊ะขาย</p>

@@ -1,10 +1,22 @@
 import { render, screen } from '@testing-library/react';
-import DashboardPage from '../app/page';
+import { DashboardHome } from '../app/dashboard/DashboardHome';
+import type { SessionWithAuth } from '../lib/auth';
 
-describe('Dashboard page', () => {
-  it('renders revenue cards', () => {
-    render(<DashboardPage />);
-    expect(screen.getByText(/Today's revenue/i)).toBeInTheDocument();
-    expect(screen.getAllByText(/vs yesterday/i).length).toBeGreaterThan(0);
+const mockCurrentUser: SessionWithAuth = {
+  userId: 'admin-1',
+  email: 'admin@example.com',
+  profile: null,
+  permissions: {
+    roles: ['admin'],
+    permissions: ['user.manage']
+  }
+};
+
+describe('DashboardHome', () => {
+  it('shows the revenue summary and calls out admin actions', () => {
+    render(<DashboardHome currentUser={mockCurrentUser} />);
+    expect(screen.getByText(/ภาพรวมระบบวันนี้/i)).toBeInTheDocument();
+    expect(screen.getByText(/ยอดขายวันนี้/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /จัดการผู้ใช้ POS/i })).toBeInTheDocument();
   });
 });

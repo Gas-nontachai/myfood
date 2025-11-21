@@ -128,9 +128,6 @@ export function DashboardHome({ currentUser }: { currentUser: SessionWithAuth | 
               <p className="text-xs uppercase tracking-[0.3em] text-slate-400">รายการสำคัญ</p>
               <h3 className="text-lg font-semibold text-slate-900">กิจกรรมที่ต้องติดตาม</h3>
             </div>
-            <Button size="sm" asChild>
-              <Link href="/reset-password">รีเซ็ตรหัสผ่าน</Link>
-            </Button>
           </div>
           <div className="space-y-3 text-sm text-slate-700">
             <p>• ตรวจสอบการอนุมัติบทบาท <strong>ผู้จัดการ</strong> 2 ราย</p>

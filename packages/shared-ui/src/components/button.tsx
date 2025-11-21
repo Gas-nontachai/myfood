@@ -11,7 +11,8 @@ const buttonVariants = cva(
       intent: {
         primary: theme.brand.primary,
         secondary: theme.brand.secondary,
-        ghost: 'bg-transparent hover:bg-gray-100 text-gray-900'
+        ghost: 'bg-transparent hover:bg-gray-100 text-gray-900',
+        danger: 'bg-red-600 text-white hover:bg-red-700 focus-visible:outline-red-600'
       },
       size: {
         sm: 'h-9 px-3',
@@ -26,9 +27,10 @@ const buttonVariants = cva(
   }
 );
 
+
 export interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   asChild?: boolean;
 }
 

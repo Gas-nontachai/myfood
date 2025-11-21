@@ -15,10 +15,7 @@ export default function AccountDisabledPage() {
         <div className="flex flex-wrap justify-center gap-3">
           <Button asChild>
             <Link href="/login">กลับหน้าล็อกอิน</Link>
-          </Button>
-          <Button intent="secondary" asChild>
-            <Link href="/reset-password">ขอรีเซ็ตรหัสผ่าน</Link>
-          </Button>
+          </Button> 
         </div>
       </Card>
     </main>

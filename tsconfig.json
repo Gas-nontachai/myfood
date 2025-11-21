@@ -1,6 +1,7 @@
 {
   "extends": "./packages/shared-config/tsconfig.base.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
       "@myfood/shared-ui/*": ["packages/shared-ui/src/*"],
       "@myfood/shared-utils/*": ["packages/shared-utils/src/*"],

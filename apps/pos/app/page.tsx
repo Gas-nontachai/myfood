@@ -1,58 +1,49 @@
-"use client";
+import Link from 'next/link';
+import { Button, Card } from '@myfood/shared-ui';
 
-import { Button } from '@myfood/shared-ui';
-import { formatCurrency } from '@myfood/shared-utils';
-import { useEffect } from 'react';
-import { initAnalytics } from '../lib/observability';
-
-const tickets = [
-  { id: '401', table: 'T4', items: 3, total: 4200, status: 'Pending' },
-  { id: '402', table: 'T1', items: 5, total: 6800, status: 'Preparing' },
-  { id: '403', table: 'Pickup', items: 2, total: 2700, status: 'Ready' }
-];
-
-export default function PosPage() {
-  useEffect(() => {
-    initAnalytics({ app: 'pos' });
-  }, []);
-
+export default function PosLandingPage() {
   return (
-    <main className="space-y-6">
-      <header className="flex items-center justify-between">
-        <div>
-          <p className="text-sm uppercase tracking-[0.28em] text-gray-400">Service</p>
-          <h1 className="text-3xl font-semibold text-white">Tonight&apos;s orders</h1>
+    <main className="space-y-10">
+      <section className="space-y-4">
+        <p className="text-xs uppercase tracking-[0.4em] text-slate-400">MyFood POS</p>
+        <h1 className="text-4xl font-semibold text-slate-900">ระบบ POS สำหรับพนักงาน</h1>
+        <p className="text-sm text-slate-600">
+          ออกแบบมาสำหรับการบริการหน้าร้านและเดลิเวอรี่ ใช้งานง่าย พร้อมเมนูหลักและสถานะของออเดอร์แบบเรียลไทม์
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Button asChild>
+            <Link href="/login">เข้าสู่ระบบพนักงาน</Link>
+          </Button>
+          <Button intent="secondary" asChild>
+            <Link href="/loading">แสดงสถานะการโหลดระบบ</Link>
+          </Button>
+          <Button intent="ghost" asChild>
+            <Link href="/home">เมนูหลักหลังล็อกอิน</Link>
+          </Button>
         </div>
-        <div className="flex gap-3">
-          <Button intent="primary">New table</Button>
-          <Button intent="secondary">Clock in</Button>
-        </div>
-      </header>
+      </section>
 
-      <section className="grid gap-4 md:grid-cols-3">
-        {tickets.map((ticket) => (
-          <article key={ticket.id} className="space-y-3 rounded-2xl bg-gray-800 p-4 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xs uppercase text-gray-400">Order #{ticket.id}</p>
-                <p className="text-xl font-semibold text-white">{ticket.table}</p>
+      <section className="grid gap-6 md:grid-cols-2">
+        <Card className="space-y-3">
+          <h2 className="text-xl font-semibold text-slate-900">เมนูหลักหลังล็อกอิน</h2>
+          <p className="text-sm text-slate-600">จะแสดงชื่อพนักงานและบทบาท พร้อมปุ่มเมนูที่สำคัญที่สุด</p>
+          <div className="grid gap-3">
+            {['สร้างออเดอร์', 'ออเดอร์ปัจจุบัน', 'สรุปรายวัน'].map((label) => (
+              <div key={label} className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-semibold text-slate-900">
+                {label}
               </div>
-              <span className="rounded-full bg-gray-700 px-3 py-1 text-xs uppercase text-gray-200">
-                {ticket.status}
-              </span>
-            </div>
-            <p className="text-sm text-gray-300">{ticket.items} items</p>
-            <p className="text-xl font-semibold text-brand-accent">{formatCurrency(ticket.total)}</p>
-            <div className="flex gap-3">
-              <Button size="sm" intent="secondary" className="flex-1">
-                Send to kitchen
-              </Button>
-              <Button size="sm" className="flex-1">
-                Close
-              </Button>
-            </div>
-          </article>
-        ))}
+            ))}
+          </div>
+        </Card>
+        <Card className="space-y-3">
+          <h2 className="text-xl font-semibold text-slate-900">หน้าจอโหลด</h2>
+          <p className="text-sm text-slate-600">
+            มีภาพรวมของสถานะอุปกรณ์และแบนด์วิดท์ พร้อมการเรนเดอร์หน้าจอโหลดอย่างเรียบง่าย
+          </p>
+          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+            ตัวอย่าง: เชื่อมต่ออุปกรณ์สำเร็จ 5/6, รอการตอบรับจากครัว
+          </div>
+        </Card>
       </section>
     </main>
   );

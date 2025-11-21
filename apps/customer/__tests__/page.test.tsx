@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react';
-import Page from '../app/page';
+import StartPage from '../app/customer/start/page';
 
-describe('Customer landing page', () => {
-  it('shows hero and CTA', () => {
-    render(<Page />);
-    expect(screen.getByText(/better dine-in ordering/i)).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /start an order/i })).toBeInTheDocument();
+describe('Customer start experience', () => {
+  it('shows the signup hero and CTA', () => {
+    render(<StartPage />);
+    expect(screen.getByText(/ลงชื่อเข้าใช้/i)).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /เริ่มสั่งอาหาร/i })).toBeInTheDocument();
   });
 });

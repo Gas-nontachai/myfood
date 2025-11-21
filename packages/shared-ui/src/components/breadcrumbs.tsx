@@ -96,7 +96,10 @@ export function Breadcrumbs({
           <li key={`${item.path}-${index}`} className="flex items-center gap-2">
             {index > 0 && <span className="text-slate-300">/</span>}
             {index < lastIndex ? (
-              <Link href={item.path} className="text-slate-500 transition-colors hover:text-slate-900">
+              <Link
+                href={{ pathname: item.path }}
+                className="text-slate-500 transition-colors hover:text-slate-900"
+              >
                 {item.label}
               </Link>
             ) : (

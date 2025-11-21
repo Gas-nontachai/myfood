@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Button, Card, Input } from '@myfood/shared-ui';
+import type { Database } from '@myfood/shared-types';
 import { createAdminClient } from '../../../../lib/supabaseAdmin';
 import {
   resetUserPasswordAction,
@@ -10,20 +11,22 @@ import {
 const formatDate = (value: string) =>
   new Intl.DateTimeFormat('th-TH', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));
 
-export default async function UserDetailPage({ params }: { params: { id: string } }) {
+export default async function UserDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const profileUserId = id as Database['public']['Tables']['profiles']['Row']['user_id'];
   const admin = createAdminClient();
   const { data: profile } = await admin
     .from('profiles')
     .select('user_id, username, full_name, role_primary, status, created_at')
-    .eq('user_id', params.id)
+    .eq('user_id', profileUserId)
     .maybeSingle();
 
   const { data: roleDetails } = await admin
     .from('user_roles')
     .select('role_id, assigned_at, roles(id, name, description)')
-    .eq('user_id', params.id);
+    .eq('user_id', profileUserId);
 
-  const { data: permissions } = await admin.rpc('get_user_permissions', { uid: params.id });
+  const { data: permissions } = await admin.rpc('get_user_permissions', { uid: profileUserId });
   const isActive = profile?.status === 'active';
 
   if (!profile) {
@@ -95,8 +98,8 @@ export default async function UserDetailPage({ params }: { params: { id: string 
                 key={`${assignment.role_id}-${assignment.assigned_at}`}
                 className="rounded-xl border border-slate-100 bg-slate-50 p-3"
               >
-                <p className="font-semibold text-slate-900">{assignment.roles?.name}</p>
-                <p>{assignment.roles?.description ?? 'คำอธิบายยังไม่ถูกกำหนด'}</p>
+                <p className="font-semibold text-slate-900">{assignment.roles?.[0]?.name}</p>
+                <p>{assignment.roles?.[0]?.description ?? 'คำอธิบายยังไม่ถูกกำหนด'}</p>
                 <p className="text-xs text-slate-500">มอบหมายเมื่อ {formatDate(assignment.assigned_at)}</p>
               </div>
             ))}

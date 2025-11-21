@@ -14,6 +14,7 @@ export async function createUserAction(formData: FormData) {
 
   if (!username || !password || !rolePrimary) {
     usersRedirect('error=กรุณากรอกข้อมูลทั้งหมด');
+    return;
   }
 
   const admin = createAdminClient();
@@ -27,6 +28,7 @@ export async function createUserAction(formData: FormData) {
 
   if (error || !data.user) {
     usersRedirect(`error=${encodeURIComponent(error?.message ?? 'ไม่สามารถสร้างบัญชีได้')}`);
+    return;
   }
 
   await admin.from('profiles').insert({
@@ -51,6 +53,7 @@ export async function resetUserPasswordAction(formData: FormData) {
 
   if (!userId || !password) {
     usersRedirect('error=รหัสผ่านใหม่ไม่ถูกต้อง');
+    return;
   }
 
   const admin = createAdminClient();
@@ -62,6 +65,7 @@ export async function softDeleteUserAction(formData: FormData) {
   const userId = (formData.get('userId') ?? '').toString();
   if (!userId) {
     usersRedirect('error=ไม่พบผู้ใช้');
+    return;
   }
 
   const admin = createAdminClient();
@@ -74,6 +78,7 @@ export async function restoreUserAction(formData: FormData) {
   const userId = (formData.get('userId') ?? '').toString();
   if (!userId) {
     usersRedirect('error=ไม่พบผู้ใช้');
+    return;
   }
 
   const admin = createAdminClient();

@@ -11,11 +11,12 @@ const currencyFormatter = new Intl.NumberFormat('th-TH', {
 });
 
 interface MenuDetailPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export default function MenuDetailPage({ params }: MenuDetailPageProps) {
-  const dish: MenuItem = mockMenuItems.find((item) => item.id === params.id) ?? mockMenuItems[0];
+export default async function MenuDetailPage({ params }: MenuDetailPageProps) {
+  const { id } = await params;
+  const dish: MenuItem = mockMenuItems.find((item) => item.id === id) ?? mockMenuItems[0];
 
   return (
     <section className="space-y-6">

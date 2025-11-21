@@ -1,20 +1,15 @@
-'use server';
+import type { SessionWithAuth } from '../lib/auth';
 
-import { loadCurrentUser } from '../lib/auth';
-import { createAdminClient } from '../lib/supabaseAdmin';
+type AdminHeaderProfileProps = {
+  currentUser: SessionWithAuth | null;
+  roleName: string | null;
+};
 
-async function fetchRoleName(roleId: number | null) {
-  if (!roleId) return null;
-  const admin = createAdminClient();
-  const { data } = await admin.from('roles').select('name').eq('id', roleId).maybeSingle();
-  return data?.name ?? null;
-}
-
-export async function AdminHeaderProfile() {
-  const session = await loadCurrentUser();
-  const profile = session?.profile;
+export function AdminHeaderProfile({ currentUser, roleName }: AdminHeaderProfileProps) {
+  const profile = currentUser?.profile;
   if (!profile) return null;
-  const roleLabel = (await fetchRoleName(profile.role_primary)) ?? `Primary role #${profile.role_primary ?? 'N/A'}`;
+
+  const roleLabel = roleName ?? `Primary role #${profile.role_primary ?? 'N/A'}`;
 
   return (
     <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-slate-500">

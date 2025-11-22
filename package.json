@@ -46,6 +46,7 @@
     "*.{md,json,yml,yaml,css,scss,ts,tsx,js,jsx}": "pnpm exec prettier --write"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.39.7"
+    "@supabase/supabase-js": "^2.39.7",
+    "dotenv": "^17.2.3"
   }
 }

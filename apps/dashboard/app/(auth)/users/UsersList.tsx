@@ -4,27 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Card, Toast } from '@myfood/shared-ui';
 import { TextSearchInput } from '../../../components/TextSearchInput';
-
-type Profile = {
-    user_id: string;
-    username: string | null;
-    full_name: string | null;
-    status: string | null;
-    role_primary: number | null;
-    created_at: string;
-};
-
-type UsersListProps = {
-    profiles: Profile[];
-    roles: { id: number; name: string }[];
-    searchParams?: {
-        created?: string;
-        error?: string;
-        disabled?: string;
-        restored?: string;
-        passwordReset?: string;
-    };
-};
+import { UsersListProps } from '../../../types';
 
 const formatDate = (value: string) =>
     new Intl.DateTimeFormat('th-TH', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value));

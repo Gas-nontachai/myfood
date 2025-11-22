@@ -4,17 +4,7 @@ import { hasPermission } from '../../../lib/permissions';
 import { loadCurrentUser } from '../../../lib/auth';
 import { createAdminClient } from '../../../lib/supabaseAdmin';
 import { UsersList } from './UsersList';
-
-type UsersPageParams = {
-  searchParams?: Promise<{
-    q?: string;
-    created?: string;
-    error?: string;
-    disabled?: string;
-    restored?: string;
-    passwordReset?: string;
-  }>;
-};
+import { UsersPageParams } from '../../../types';
 
 export default async function UsersPage({ searchParams }: UsersPageParams) {
   const resolvedParams = await searchParams;

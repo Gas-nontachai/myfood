@@ -4,22 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Card, Toast } from '@myfood/shared-ui';
 import { TextSearchInput } from '../../../components/TextSearchInput';
-
-type Role = {
-    id: number;
-    name: string;
-    description: string | null;
-};
-
-type RolesListProps = {
-    roles: Role[];
-    searchParams?: {
-        created?: string;
-        updated?: string;
-        deleted?: string;
-        error?: string;
-    };
-};
+import { RolesListProps } from '../../../types';
 
 export function RolesList({ roles, searchParams }: RolesListProps) {
     const [searchTerm, setSearchTerm] = useState('');

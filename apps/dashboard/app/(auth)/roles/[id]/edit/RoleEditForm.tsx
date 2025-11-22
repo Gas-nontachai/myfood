@@ -4,18 +4,7 @@ import { useState, useTransition, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Card, Input, Checkbox } from '@myfood/shared-ui';
 import { updateRoleAndPermissions, deleteRole } from '../../actions';
-
-type Role = {
-    id: number;
-    name: string;
-    description: string | null;
-};
-
-type Permission = {
-    id: number;
-    code: string;
-    description: string | null;
-};
+import { Role, Permission } from '../../../../../types';
 
 type Props = {
     role: Role;

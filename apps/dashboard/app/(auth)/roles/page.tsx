@@ -2,16 +2,7 @@ import Link from 'next/link';
 import { Button } from '@myfood/shared-ui';
 import { createAdminClient } from '../../../lib/supabaseAdmin';
 import { RolesList } from './RolesList';
-
-type RolesPageParams = {
-    searchParams?: Promise<{
-        q?: string;
-        created?: string;
-        updated?: string;
-        deleted?: string;
-        error?: string;
-    }>;
-};
+import { RolesPageParams } from '../../../types';
 
 export default async function RolesPage({ searchParams }: RolesPageParams) {
     const resolvedParams = await searchParams;

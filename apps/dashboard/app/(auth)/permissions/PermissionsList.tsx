@@ -4,22 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Card, Toast } from '@myfood/shared-ui';
 import { TextSearchInput } from '../../../components/TextSearchInput';
+import { PermissionsListProps } from '../../../types';
 
-type Permission = {
-    id: number;
-    code: string;
-    description: string | null;
-};
-
-type PermissionsListProps = {
-    permissions: Permission[];
-    searchParams?: {
-        created?: string;
-        updated?: string;
-        deleted?: string;
-        error?: string;
-    };
-};
 
 export function PermissionsList({ permissions, searchParams }: PermissionsListProps) {
     const [searchTerm, setSearchTerm] = useState('');

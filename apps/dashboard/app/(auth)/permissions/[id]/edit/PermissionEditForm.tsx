@@ -4,12 +4,7 @@ import { useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Card, Input } from '@myfood/shared-ui';
 import { updatePermission, deletePermission } from '../../actions';
-
-type Permission = {
-    id: number;
-    code: string;
-    description: string | null;
-};
+import { Permission } from '../../../../../types/';
 
 type Props = {
     permission: Permission;

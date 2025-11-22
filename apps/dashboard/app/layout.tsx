@@ -10,7 +10,6 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  // ✔️ ตอนนี้ RootLayout แค่โหลดข้อมูล user (อ่านได้ แต่ไม่ redirect)
   const currentUser = await loadCurrentUser();
 
   return (

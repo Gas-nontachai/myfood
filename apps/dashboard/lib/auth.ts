@@ -75,10 +75,12 @@ export async function loadCurrentUser(): Promise<SessionWithAuth | null> {
     cookies: cookieAccessor,
   });
 
-  const { data } = await supabase.auth.getSession();
-  if (!data.session) return null;
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  const { user } = data.session;
+  if (!user || error) return null;
 
   const [profile, permissions] = await Promise.all([
     fetchProfile(user.id),
@@ -92,6 +94,7 @@ export async function loadCurrentUser(): Promise<SessionWithAuth | null> {
     permissions,
   };
 }
+
 
 export async function loginAction(formData: FormData) {
   const username = (formData.get('username') ?? '').toString().trim();

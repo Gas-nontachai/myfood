@@ -11,18 +11,19 @@
     "test": "jest --config ./jest.config.js"
   },
   "dependencies": {
+    "@logtail/node": "^0.3.2",
     "@myfood/shared-types": "workspace:*",
     "@myfood/shared-ui": "workspace:*",
     "@myfood/shared-utils": "workspace:*",
     "@sentry/nextjs": "^7.91.0",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.39.7",
-    "@logtail/node": "^0.3.2",
-    "zustand": "^4.4.0",
+    "lucide-react": "^0.554.0",
     "next": "15.0.0",
     "posthog-js": "^1.77.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "zustand": "^4.4.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.2.0",
@@ -34,9 +35,9 @@
     "eslint": "^8.55.0",
     "eslint-config-next": "15.0.0",
     "jest": "^29.7.0",
-    "ts-jest": "^29.1.1",
-    "typescript": "^5.3.3",
     "postcss": "^8.4.32",
-    "tailwindcss": "^3.3.5"
+    "tailwindcss": "^3.3.5",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3"
   }
 }

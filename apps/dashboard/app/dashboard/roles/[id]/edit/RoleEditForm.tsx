@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button, Card, Input, Checkbox } from '@myfood/shared-ui';
-import { updateRole, updateRolePermissions, deleteRole } from '../../actions';
+import { updateRoleAndPermissions, deleteRole } from '../../actions';
 
 type Role = {
     id: number;
@@ -38,16 +38,14 @@ export function RoleEditForm({ role, allPermissions, assignedPermissionIds }: Pr
 
     const handleSubmit = async (formData: FormData) => {
         startTransition(async () => {
-            const resRole = await updateRole(role.id, null, formData);
-            if (resRole?.error) {
-                alert(resRole.error);
-                return;
-            }
+            const res = await updateRoleAndPermissions(
+                role.id,
+                formData,
+                selectedPermissionIds
+            );
 
-            try {
-                await updateRolePermissions(role.id, selectedPermissionIds);
-            } catch (error: any) {
-                alert(error.message);
+            if (res?.error) {
+                alert(res.error);
                 return;
             }
         });
@@ -106,7 +104,7 @@ export function RoleEditForm({ role, allPermissions, assignedPermissionIds }: Pr
                         ลบบทบาท
                     </Button>
                     <div className="flex gap-4">
-                        <Button type="button" intent="secondary" onClick={() => router.back()} disabled={isPending}>
+                        <Button type="button" intent="secondary" onClick={() => router.push('/dashboard/roles')} disabled={isPending}>
                             ยกเลิก
                         </Button>
                         <Button type="submit" disabled={isPending}>

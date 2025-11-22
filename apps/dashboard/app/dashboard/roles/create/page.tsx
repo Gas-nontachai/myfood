@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import { Button, Card, Input } from '@myfood/shared-ui';
 import { createRole } from '../actions';
-import { useFormState } from 'react-dom';
+import { useActionState } from "react";
 
 export default function CreateRolePage() {
-    const [state, formAction] = useFormState(createRole, { error: '' });
+    const [state, formAction] = useActionState(createRole, { error: '' });
 
     return (
         <section className="space-y-6">

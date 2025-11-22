@@ -23,58 +23,55 @@ export async function createRole(prevState: any, formData: FormData) {
     redirect('/dashboard/roles?created=true');
 }
 
-export async function updateRole(roleId: number, prevState: any, formData: FormData) {
-    const name = formData.get('name') as string;
-    const description = formData.get('description') as string;
+export async function updateRoleAndPermissions(
+  roleId: number,
+  formData: FormData,
+  permissionIds: number[]
+) {
+  const admin = createAdminClient();
 
-    if (!name) {
-        return { error: 'กรุณาระบุชื่อบทบาท' };
-    }
+  const name = formData.get("name") as string;
+  const description = formData.get("description") as string;
 
-    const admin = createAdminClient();
-    const { error } = await admin
-        .from('roles')
-        .update({ name, description })
-        .eq('id', roleId);
+  if (!name) {
+    return { error: "กรุณาระบุชื่อบทบาท" };
+  }
 
-    if (error) {
-        return { error: error.message };
-    }
+  const { error: updateError } = await admin
+    .from("roles")
+    .update({ name, description })
+    .eq("id", roleId);
 
-    revalidatePath('/dashboard/roles');
-    redirect(`/dashboard/roles/${roleId}/edit?updated=true`);
-}
+  if (updateError) {
+    return { error: updateError.message };
+  }
 
-export async function updateRolePermissions(roleId: number, permissionIds: number[]) {
-    const admin = createAdminClient();
+  const { error: deleteError } = await admin
+    .from("role_permissions")
+    .delete()
+    .eq("role_id", roleId);
 
-    // 1. Remove old permissions
-    const { error: deleteError } = await admin
-        .from('role_permissions')
-        .delete()
-        .eq('role_id', roleId);
+  if (deleteError) {
+    return { error: deleteError.message };
+  }
 
-    if (deleteError) {
-        throw new Error(deleteError.message);
-    }
+  if (permissionIds.length > 0) {
+    const { error: insertError } = await admin
+      .from("role_permissions")
+      .insert(
+        permissionIds.map((pid) => ({
+          role_id: roleId,
+          permission_id: pid,
+        }))
+      );
 
-    // 2. Insert new ones
-    if (permissionIds.length > 0) {
-        const { error: insertError } = await admin
-            .from('role_permissions')
-            .insert(
-                permissionIds.map((pid) => ({
-                    role_id: roleId,
-                    permission_id: pid
-                }))
-            );
+    if (insertError) return { error: insertError.message };
+  }
 
-        if (insertError) {
-            throw new Error(insertError.message);
-        }
-    }
+  revalidatePath("/dashboard/roles");
+  revalidatePath(`/dashboard/roles/${roleId}/edit`);
 
-    revalidatePath(`/dashboard/roles/${roleId}/edit`);
+  redirect(`/dashboard/roles/${roleId}/edit?updated=true`);
 }
 
 export async function deleteRole(id: number) {

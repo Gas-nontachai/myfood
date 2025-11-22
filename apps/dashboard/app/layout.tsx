@@ -6,11 +6,10 @@ import { loadCurrentUser } from '../lib/auth';
 
 export const metadata: Metadata = {
   title: 'แดชบอร์ดผู้ดูแลระบบ MyFood',
-  description: 'จัดการผู้ใช้ POS, เหตุการณ์ และการแจ้งเตือนในระบบ',
+  description: 'จัดการผู้ใช้ POS',
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  // ✔️ ตอนนี้ RootLayout แค่โหลดข้อมูล user (อ่านได้ แต่ไม่ redirect)
   const currentUser = await loadCurrentUser();
 
   return (

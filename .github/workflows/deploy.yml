@@ -14,10 +14,12 @@ jobs:
 
     steps:
       # -------------------------
-      # Checkout Code
+      # Checkout Code (ต้อง fetch-depth 50+)
       # -------------------------
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
 
       # -------------------------
       # Setup Node & PNPM
@@ -41,10 +43,13 @@ jobs:
       - name: Detect changed projects
         id: changes
         run: |
-          echo "customer=$(git diff --name-only HEAD~1 HEAD | grep '^apps/customer/' | wc -l)" >> $GITHUB_OUTPUT
-          echo "pos=$(git diff --name-only HEAD~1 HEAD | grep '^apps/pos/' | wc -l)" >> $GITHUB_OUTPUT
-          echo "admin=$(git diff --name-only HEAD~1 HEAD | grep '^apps/dashboard/' | wc -l)" >> $GITHUB_OUTPUT
-          echo "shared=$(git diff --name-only HEAD~1 HEAD | grep '^packages/' | wc -l)" >> $GITHUB_OUTPUT
+          BEFORE=${{ github.event.before }}
+          AFTER=${{ github.sha }}
+
+          echo "customer=$(git diff --name-only $BEFORE $AFTER | grep '^apps/customer/' | wc -l)" >> $GITHUB_OUTPUT
+          echo "pos=$(git diff --name-only $BEFORE $AFTER | grep '^apps/pos/' | wc -l)" >> $GITHUB_OUTPUT
+          echo "admin=$(git diff --name-only $BEFORE $AFTER | grep '^apps/dashboard/' | wc -l)" >> $GITHUB_OUTPUT
+          echo "shared=$(git diff --name-only $BEFORE $AFTER | grep '^packages/' | wc -l)" >> $GITHUB_OUTPUT
 
       - name: Summary change detection
         run: |
@@ -66,8 +71,7 @@ jobs:
 
       - name: Build Admin
         if: steps.changes.outputs.admin != '0' || steps.changes.outputs.shared != '0'
-        run: |
-          pnpm --filter @myfood/dashboard build
+        run: pnpm --filter @myfood/dashboard build
 
       # -------------------------
       # DEPLOY — selective

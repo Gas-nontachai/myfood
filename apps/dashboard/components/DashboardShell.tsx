@@ -103,7 +103,6 @@ const breadcrumbLabels = {
 type DashboardShellProps = {
   children: ReactNode;
   currentUser: SessionWithAuth | null;
-  roleName: string | null;
   hideSidebar?: boolean;
   hideHeader?: boolean;
 };
@@ -126,7 +125,6 @@ import { computeShouldHideLayout } from '../app/layoutUtils';
 export function DashboardShell({
   children,
   currentUser,
-  roleName,
   hideSidebar: propsHideSidebar = false,
   hideHeader: propsHideHeader = false
 }: DashboardShellProps) {
@@ -245,11 +243,12 @@ export function DashboardShell({
                       <h1 className="text-3xl font-semibold text-slate-900">ศูนย์ควบคุมแอดมิน</h1>
                     </div>
                   </div>
-
-                  <LogoutButton />
+                  <div className="flex flex-col items-end justify-center gap-2">
+                    <AdminHeaderProfile currentUser={currentUser} />
+                    <LogoutButton />
+                  </div>
                 </div>
 
-                <AdminHeaderProfile currentUser={currentUser} roleName={roleName} />
               </header>
 
               <Breadcrumbs

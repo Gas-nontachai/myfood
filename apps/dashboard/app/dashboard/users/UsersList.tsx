@@ -31,9 +31,17 @@ const formatDate = (value: string) =>
 
 export function UsersList({ profiles, roles, searchParams }: UsersListProps) {
     const [searchTerm, setSearchTerm] = useState('');
+    const [activeTab, setActiveTab] = useState<'active' | 'inactive'>('active');
+
     const roleById = new Map(roles.map((role) => [role.id, role.name]));
 
-    const filteredProfiles = profiles.filter((profile) =>
+    const tabProfiles = profiles.filter((p) => {
+        return activeTab === 'active'
+            ? p.status === 'active'
+            : p.status !== 'active';
+    });
+
+    const filteredProfiles = tabProfiles.filter((profile) =>
         (profile.username || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -68,6 +76,29 @@ export function UsersList({ profiles, roles, searchParams }: UsersListProps) {
             </div>
 
             <Card className="space-y-4">
+
+                <div className="flex border-b border-slate-200 text-sm">
+                    <button
+                        onClick={() => setActiveTab('active')}
+                        className={`px-4 py-2 -mb-px border-b-2 transition ${activeTab === 'active'
+                            ? 'border-brand-primary text-brand-primary font-semibold'
+                            : 'border-transparent text-slate-500 hover:text-slate-700'
+                            }`}
+                    >
+                        ผู้ใช้ Active
+                    </button>
+
+                    <button
+                        onClick={() => setActiveTab('inactive')}
+                        className={`px-4 py-2 -mb-px border-b-2 transition ${activeTab === 'inactive'
+                            ? 'border-brand-primary text-brand-primary font-semibold'
+                            : 'border-transparent text-slate-500 hover:text-slate-700'
+                            }`}
+                    >
+                        ผู้ใช้ Inactive
+                    </button>
+                </div>
+
                 <div className="flex flex-col gap-3 md:flex-row">
                     <TextSearchInput
                         name="q"
@@ -76,6 +107,7 @@ export function UsersList({ profiles, roles, searchParams }: UsersListProps) {
                         onChange={setSearchTerm}
                     />
                 </div>
+
                 <div className="overflow-x-auto">
                     <table className="min-w-full text-left text-sm">
                         <thead>
@@ -102,7 +134,9 @@ export function UsersList({ profiles, roles, searchParams }: UsersListProps) {
                                     <td className="px-3 py-3 text-slate-500">{formatDate(profile.created_at)}</td>
                                     <td className="px-3 py-3">
                                         <span
-                                            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${profile.status === 'active' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-800'
+                                            className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${profile.status === 'active'
+                                                ? 'bg-emerald-50 text-emerald-700'
+                                                : 'bg-amber-50 text-amber-800'
                                                 }`}
                                         >
                                             {profile.status === 'active' ? 'Active' : 'Inactive'}
@@ -115,6 +149,14 @@ export function UsersList({ profiles, roles, searchParams }: UsersListProps) {
                                     </td>
                                 </tr>
                             ))}
+
+                            {filteredProfiles.length === 0 && (
+                                <tr>
+                                    <td colSpan={5} className="px-3 py-6 text-center text-slate-400">
+                                        ไม่พบผู้ใช้ในหมวดนี้
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

@@ -16,15 +16,19 @@ import {
   Shield,
   KeyRound,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  CookingPot,
+  Package,
+  Menu
 } from 'lucide-react';
+
+import { computeShouldHideLayout } from '../app/layoutUtils';
 
 type MenuItem = {
   label: string;
   href: string;
   icon?: ReactNode;
-  // eslint-disable-next-line no-unused-vars
-  match?: (path: string | null) => boolean;
+  match?: (_path: string | null) => boolean; // eslint-disable-line no-unused-vars
 };
 
 type MenuSection = {
@@ -38,7 +42,7 @@ const MENU_SECTIONS: MenuSection[] = [
     items: [
       {
         label: 'ภาพรวมระบบ',
-        href: '/dashboard',
+        href: '/',
         icon: <Home size={20} />
       }
     ]
@@ -48,12 +52,11 @@ const MENU_SECTIONS: MenuSection[] = [
     items: [
       {
         label: 'รายชื่อผู้ใช้',
-        href: '/dashboard/users',
+        href: '/users',
         icon: <Users size={20} />,
         match: (path) =>
-          path === '/dashboard/users' ||
-          (!!path?.startsWith('/dashboard/users/') &&
-            !path?.startsWith('/dashboard/users/create'))
+          path === '/users' ||
+          (!!path?.startsWith('/users/') && !path?.startsWith('/users/create'))
       }
     ]
   },
@@ -62,42 +65,76 @@ const MENU_SECTIONS: MenuSection[] = [
     items: [
       {
         label: 'บทบาทผู้ใช้งาน',
-        href: '/dashboard/roles',
+        href: '/roles',
         icon: <Shield size={20} />,
-        match: (path) =>
-          path === '/dashboard/roles' ||
-          !!path?.startsWith('/dashboard/roles/')
+        match: (path) => path === '/roles' || !!path?.startsWith('/roles/')
       },
       {
         label: 'สิทธิ์การใช้งาน',
-        href: '/dashboard/permissions',
+        href: '/permissions',
         icon: <KeyRound size={20} />,
         match: (path) =>
-          path === '/dashboard/permissions' ||
-          !!path?.startsWith('/dashboard/permissions/')
+          path === '/permissions' || !!path?.startsWith('/permissions/')
+      }
+    ]
+  },
+  {
+    title: 'จัดการสินค้า',
+    items: [
+      {
+        label: 'รายการสินค้า',
+        href: '/product',
+        icon: <Package size={20} />,
+        match: (path) => path === '/product' || !!path?.startsWith('/product/')
+      },
+      {
+        label: 'ประเภทสินค้า',
+        href: '/product_category',
+        icon: <CookingPot size={20} />,
+        match: (path) =>
+          path === '/product_category' ||
+          !!path?.startsWith('/product_category/')
       }
     ]
   }
 ];
 
 const breadcrumbLabels = {
-  '/dashboard': 'ภาพรวมระบบ',
-  '/dashboard/users': 'จัดการผู้ใช้',
-  '/dashboard/users/create': 'สร้างผู้ใช้ใหม่',
-  '/dashboard/users/[id]': 'โปรไฟล์ผู้ใช้',
-  '/dashboard/users/[id]/edit': 'แก้ไขบัญชี',
-  '/dashboard/roles': 'บทบาทผู้ใช้งาน',
-  '/dashboard/roles/create': 'สร้างบทบาทใหม่',
-  '/dashboard/roles/[id]/edit': 'แก้ไขบทบาท',
-  '/dashboard/permissions': 'สิทธิ์การใช้งาน',
-  '/dashboard/permissions/create': 'สร้างสิทธิ์ใหม่',
-  '/dashboard/permissions/[id]/edit': 'แก้ไขสิทธิ์',
-  '/dashboard/no-access': 'สิทธิ์ไม่เพียงพอ',
-  '/dashboard/login': 'เข้าสู่ระบบแอดมิน',
+  '/': 'ภาพรวมระบบ',
+  '/users': 'จัดการผู้ใช้',
+  '/users/create': 'สร้างผู้ใช้ใหม่',
+  '/users/[id]': 'โปรไฟล์ผู้ใช้',
+  '/users/[id]/edit': 'แก้ไขบัญชี',
+  '/roles': 'บทบาทผู้ใช้งาน',
+  '/roles/create': 'สร้างบทบาทใหม่',
+  '/roles/[id]': 'รายละเอียดบทบาท',
+  '/roles/[id]/edit': 'แก้ไขบทบาท',
+  '/permissions': 'สิทธิ์การใช้งาน',
+  '/permissions/create': 'สร้างสิทธิ์ใหม่',
+  '/permissions/[id]/edit': 'แก้ไขสิทธิ์',
+  '/product': 'จัดการสินค้า',
+  '/product/create': 'สร้างสินค้าใหม่',
+  '/product/[id]/edit': 'แก้ไขสินค้า',
+  '/product_category': 'จัดการประเภทสินค้า',
+  '/product_category/create': 'สร้างประเภทสินค้า',
+  '/product_category/[id]': 'รายละเอียดประเภทสินค้า',
+  '/product_category/[id]/edit': 'แก้ไขประเภทสินค้า',
+  '/no-access': 'สิทธิ์ไม่เพียงพอ',
+  '/login': 'เข้าสู่ระบบแอดมิน',
   '/account-disabled': 'บัญชีถูกระงับ',
-  '/reports': 'รายงานประจำสัปดาห์',
-  '/users': 'รายชื่อผู้ใช้ POS',
-  '/users/[id]/edit': 'แก้ไขผู้ใช้ POS'
+  '/reports': 'รายงานประจำสัปดาห์'
+};
+
+const isMenuItemActive = (pathname: string | null, item: MenuItem) => {
+  if (!pathname) return false;
+
+  if (item.href === '/') {
+    return pathname === '/';
+  }
+
+  if (typeof item.match === 'function') return item.match(pathname);
+
+  return pathname === item.href || pathname.startsWith(`${item.href}/`);
 };
 
 type DashboardShellProps = {
@@ -107,80 +144,68 @@ type DashboardShellProps = {
   hideHeader?: boolean;
 };
 
-const isMenuItemActive = (pathname: string | null, item: MenuItem) => {
-  if (!pathname) return false;
-
-  if (item.href === '/dashboard') {
-    return pathname === '/dashboard';
-  }
-
-  if (typeof item.match === 'function') return item.match(pathname);
-
-  return pathname === item.href || pathname.startsWith(`${item.href}/`);
-};
-
-
-import { computeShouldHideLayout } from '../app/layoutUtils';
-
 export function DashboardShell({
   children,
   currentUser,
   hideSidebar: propsHideSidebar = false,
   hideHeader: propsHideHeader = false
 }: DashboardShellProps) {
-
   const pathname = usePathname();
   const shouldHide = computeShouldHideLayout(pathname || '');
 
   const hideSidebar = propsHideSidebar || shouldHide;
   const hideHeader = propsHideHeader || shouldHide;
 
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
-
-  // ⭐ sidebar compact mode
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [compact, setCompact] = useState(false);
 
   const wrapperPadding = hideSidebar
     ? 'lg:pl-0'
-    : isSidebarOpen
-      ? compact
-        ? 'lg:pl-20'
-        : 'lg:pl-72'
-      : 'lg:pl-0';
+    : compact
+      ? 'lg:pl-20'
+      : 'lg:pl-72';
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
 
-      {/* Overlay mobile */}
+      {/* Mobile / Tablet overlay */}
       {!hideSidebar && (
         <div
           onClick={() => setSidebarOpen(false)}
           aria-hidden="true"
-          className={`${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-            } fixed inset-0 z-40 bg-slate-900/40 transition-opacity duration-200 ease-in-out lg:hidden`}
+          className={`
+            fixed inset-0 z-40 bg-slate-900/40 transition-opacity duration-200
+            ${isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}
+            lg:hidden
+          `}
         />
       )}
 
       {/* Sidebar */}
       {!hideSidebar && (
         <aside
-          className={`fixed inset-y-0 left-0 z-50
-          ${compact ? 'w-20' : 'w-72'}
-          max-w-full border-r border-slate-200 bg-white px-4 py-8 shadow-2xl
-          transition-all duration-200 ease-in-out
-          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:-translate-x-full'}`}
-        >
+          className={`
+            fixed inset-y-0 left-0 z-50 bg-white border-r border-slate-200 shadow-xl
+            px-4 py-8
+            transition-all duration-200 ease-in-out
 
-          {/* Toggle Compact */}
+            ${compact ? 'w-20' : 'w-72'}
+
+            /* Mobile + Tablet slide */
+            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+            /* Desktop always open */
+            lg:translate-x-0
+          `}
+        >
+          {/* Toggle compact mode (desktop only) */}
           <button
             onClick={() => setCompact(!compact)}
-            className="absolute -right-3 top-6 z-50 flex h-6 w-6 items-center justify-center rounded-full border bg-white shadow hover:bg-slate-50"
+            className="absolute -right-3 top-6 z-50 hidden lg:flex h-6 w-6 items-center justify-center rounded-full border bg-white shadow hover:bg-slate-50"
           >
             {compact ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
 
           <nav className="mt-8 flex h-full flex-col justify-between">
-
             <div className="space-y-8">
               {MENU_SECTIONS.map((section) => (
                 <div key={section.title} className="space-y-3">
@@ -197,11 +222,14 @@ export function DashboardShell({
                         <Link
                           key={item.label}
                           href={{ pathname: item.href }}
-                          className={`group flex items-center gap-3 rounded-2xl px-3 py-2 transition
+                          onClick={() => setSidebarOpen(false)}
+                          className={`
+                            group flex items-center gap-3 rounded-2xl px-3 py-2 transition
                             ${isActive
                               ? 'bg-slate-900 text-white shadow-lg shadow-slate-900/30'
                               : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
-                            }`}
+                            }
+                          `}
                         >
                           <span className="flex h-6 w-6 items-center justify-center">
                             {item.icon}
@@ -230,19 +258,30 @@ export function DashboardShell({
 
       {/* CONTENT */}
       <div className={`flex min-h-screen flex-col transition-all duration-200 ${wrapperPadding}`}>
-        <div className="mx-auto w-full max-w-6xl px-6 py-8">
+        <div className="mx-auto w-full max-w-6xl px-6 py-2">
 
           {/* Header */}
           {!hideHeader && (
             <>
-              <header className="flex flex-col gap-4 border-b border-slate-200 pb-5">
+              <header className="flex flex-col gap-4 border-b border-slate-200 pb-2">
+
                 <div className="flex items-center justify-between gap-4">
+
+                  {/* Sidebar toggle button (mobile + tablet only) */}
                   <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setSidebarOpen(true)}
+                      className="lg:hidden p-2 rounded-md hover:bg-slate-100"
+                    >
+                      <Menu size={20} />
+                    </button>
+
                     <div>
                       <p className="text-xs uppercase tracking-[0.3em] text-slate-500">MyFood</p>
                       <h1 className="text-3xl font-semibold text-slate-900">ศูนย์ควบคุมแอดมิน</h1>
                     </div>
                   </div>
+
                   <div className="flex flex-col items-end justify-center gap-2">
                     <AdminHeaderProfile currentUser={currentUser} />
                     <LogoutButton />
@@ -254,7 +293,7 @@ export function DashboardShell({
               <Breadcrumbs
                 labelMap={breadcrumbLabels}
                 rootLabel="ศูนย์ควบคุมแอดมิน"
-                rootHref="/dashboard"
+                rootHref="/"
                 className="mb-6"
               />
             </>

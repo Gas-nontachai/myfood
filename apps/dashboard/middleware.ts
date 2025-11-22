@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 import type { Database } from '@myfood/shared-types';
 
-const PUBLIC_PATHS = ['/login', '/account-disabled', '/no-access', '/api'];
+const PUBLIC_PATHS = ['/login', '/account-disabled', '/no-access'];
 
 export async function middleware(req: NextRequest) {
   const url = req.nextUrl.clone();
@@ -42,7 +42,7 @@ export async function middleware(req: NextRequest) {
       .maybeSingle();
 
     if (role?.name !== "admin") {
-      url.pathname = "/dashboard/no-access";
+      url.pathname = "/no-access";
       return NextResponse.redirect(url);
     }
   }

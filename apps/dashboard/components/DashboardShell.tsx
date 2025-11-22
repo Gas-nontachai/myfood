@@ -137,7 +137,6 @@ export function DashboardShell({
 
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
-  // ⭐ sidebar compact mode
   const [compact, setCompact] = useState(false);
 
   const wrapperPadding = hideSidebar
@@ -230,12 +229,12 @@ export function DashboardShell({
 
       {/* CONTENT */}
       <div className={`flex min-h-screen flex-col transition-all duration-200 ${wrapperPadding}`}>
-        <div className="mx-auto w-full max-w-6xl px-6 py-8">
+        <div className="mx-auto w-full max-w-6xl px-6 py-2">
 
           {/* Header */}
           {!hideHeader && (
             <>
-              <header className="flex flex-col gap-4 border-b border-slate-200 pb-5">
+              <header className="flex flex-col gap-4 border-b border-slate-200 pb-2">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <div>

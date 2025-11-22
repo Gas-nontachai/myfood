@@ -16,7 +16,8 @@ import {
   Shield,
   KeyRound,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  CookingPot
 } from 'lucide-react';
 
 type MenuItem = {
@@ -77,26 +78,55 @@ const MENU_SECTIONS: MenuSection[] = [
           !!path?.startsWith('/permissions/')
       }
     ]
+  },
+  {
+    title: 'จัดการสินค้า',
+    items: [
+      {
+        label: 'ประเภทสินค้า',
+        href: '/product_category',
+        icon: <CookingPot size={20} />,
+        match: (path) =>
+          path === '/product_category' ||
+          !!path?.startsWith('/product_category/')
+      }
+    ]
   }
 ];
 
 const breadcrumbLabels = {
   '/': 'ภาพรวมระบบ',
+
+  // Users
   '/users': 'จัดการผู้ใช้',
   '/users/create': 'สร้างผู้ใช้ใหม่',
   '/users/[id]': 'โปรไฟล์ผู้ใช้',
   '/users/[id]/edit': 'แก้ไขบัญชี',
+
+  // Roles
   '/roles': 'บทบาทผู้ใช้งาน',
   '/roles/create': 'สร้างบทบาทใหม่',
+  '/roles/[id]': 'รายละเอียดบทบาท',
   '/roles/[id]/edit': 'แก้ไขบทบาท',
+
+  // Permissions
   '/permissions': 'สิทธิ์การใช้งาน',
   '/permissions/create': 'สร้างสิทธิ์ใหม่',
   '/permissions/[id]/edit': 'แก้ไขสิทธิ์',
+
+  // Product Category
+  '/product_category': 'จัดการประเภทสินค้า',
+  '/product_category/create': 'สร้างประเภทสินค้า',
+  '/product_category/[id]': 'รายละเอียดประเภทสินค้า',
+  '/product_category/[id]/edit': 'แก้ไขประเภทสินค้า',
+
+  // Misc
   '/no-access': 'สิทธิ์ไม่เพียงพอ',
   '/login': 'เข้าสู่ระบบแอดมิน',
   '/account-disabled': 'บัญชีถูกระงับ',
-  '/reports': 'รายงานประจำสัปดาห์', 
+  '/reports': 'รายงานประจำสัปดาห์',
 };
+
 
 type DashboardShellProps = {
   children: ReactNode;

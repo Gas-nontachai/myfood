@@ -1,3 +1,4 @@
+export * from './category';
 export * from './profile';
 export * from './roles';
 export * from './permissions';

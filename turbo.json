@@ -13,6 +13,14 @@
         "coverage/**"
       ]
     },
+    "storybook": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "packages/shared-ui/storybook-static/**"
+      ]
+    },
     "build": {
       "dependsOn": [
         "^build",
@@ -20,18 +28,11 @@
         "^test"
       ],
       "outputs": [
-        "apps/**/.next/**",
-        "apps/**/build/**",
-        "packages/**/dist/**"
-      ]
-    },
-    "storybook": {
-      "dependsOn": [
-        "^build"
-      ],
-      "cache": false,
-      "outputs": [
-        "packages/shared-ui/storybook-static/**"
+        "apps/customer/.next/**",
+        "apps/pos/.next/**",
+        "apps/dashboard/.next/**",
+        "packages/shared-ui/dist/**",
+        "packages/shared-types/dist/**"
       ]
     }
   }

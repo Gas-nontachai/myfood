@@ -1,147 +1,23 @@
 name: CI
 
+# -----------------------------
+# 1) CI: run on PR (NO DEPLOY)
+# -----------------------------
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
-  build-test-deploy:
+  pr-ci:
     runs-on: ubuntu-latest
-    env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20.16
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
+      - uses: pnpm/action-setup@v3
         with:
           version: 8
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
-
-      - name: Lint
-        run: pnpm lint
-
-      - name: Test
-        run: pnpm test
-
-      # ---------------------------
-      # Customer Build
-      # ---------------------------
-      - name: Build customer
-        run: pnpm --filter @myfood/customer build
-
-      # ---------------------------
-      # POS Build
-      # ---------------------------
-      - name: Build pos
-        run: pnpm --filter @myfood/pos build
-
-      # ---------------------------
-      # Dashboard Build (FIXED)
-      # ---------------------------
-      - name: Build admin dashboard
-        run: pnpm --filter @myfood/dashboard build
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SUPABASE_JWT_SECRET: ${{ secrets.SUPABASE_JWT_SECRET }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          APP_ENV: ${{ secrets.APP_ENV }}
-
-      # ---------------------------
-      # Customer Deploy
-      # ---------------------------
-      - name: Prepare customer env
-        if: github.ref == 'refs/heads/main'
-        run: npx vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_CUSTOMER }}
-
-      - name: Build customer (vercel)
-        if: github.ref == 'refs/heads/main'
-        run: npx vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_CUSTOMER }}
-
-      - name: Deploy customer to Vercel
-        if: github.ref == 'refs/heads/main'
-        run: npx vercel deploy --prebuilt --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_CUSTOMER }}
-
-      # ---------------------------
-      # POS Deploy
-      # ---------------------------
-      - name: Prepare pos env
-        if: github.ref == 'refs/heads/main'
-        run: npx vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_POS }}
-
-      - name: Build pos (vercel)
-        if: github.ref == 'refs/heads/main'
-        run: npx vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_POS }}
-
-      - name: Deploy pos to Vercel
-        if: github.ref == 'refs/heads/main'
-        run: npx vercel deploy --prebuilt --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_POS }}
-
-      # ---------------------------
-      # Admin Dashboard Deploy
-      # ---------------------------
-      - name: Prepare admin env
-        if: github.ref == 'refs/heads/main'
-        run: npx vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SUPABASE_JWT_SECRET: ${{ secrets.SUPABASE_JWT_SECRET }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          APP_ENV: ${{ secrets.APP_ENV }}
-
-      - name: Build admin (vercel)
-        if: github.ref == 'refs/heads/main'
-        run: npx vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SUPABASE_JWT_SECRET: ${{ secrets.SUPABASE_JWT_SECRET }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          APP_ENV: ${{ secrets.APP_ENV }}
-
-      - name: Deploy admin to Vercel
-        if: github.ref == 'refs/heads/main'
-        run: npx vercel deploy --prebuilt --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
-        env:
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          SUPABASE_JWT_SECRET: ${{ secrets.SUPABASE_JWT_SECRET }}
-          NEXTAUTH_SECRET: ${{ secrets.NEXTAUTH_SECRET }}
-          APP_ENV: ${{ secrets.APP_ENV }}
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm test

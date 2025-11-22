@@ -12,14 +12,24 @@ const mockRoles = [
 ];
 
 describe('UsersList', () => {
-    it('renders all users initially', () => {
+    it('renders active users by default', () => {
         render(<UsersList profiles={mockProfiles} roles={mockRoles} />);
         expect(screen.getByText('user1')).toBeInTheDocument();
-        expect(screen.getByText('user2')).toBeInTheDocument();
+        expect(screen.queryByText('user2')).not.toBeInTheDocument();
     });
 
-    it('filters users based on search input', () => {
+    it('renders inactive users when clicking inactive tab', () => {
         render(<UsersList profiles={mockProfiles} roles={mockRoles} />);
+
+        fireEvent.click(screen.getByText('ผู้ใช้ Inactive'));
+
+        expect(screen.getByText('user2')).toBeInTheDocument();
+        expect(screen.queryByText('user1')).not.toBeInTheDocument();
+    });
+
+    it('filters users based on search input in active tab', () => {
+        render(<UsersList profiles={mockProfiles} roles={mockRoles} />);
+
         const input = screen.getByPlaceholderText('ค้นหาชื่อผู้ใช้');
         fireEvent.change(input, { target: { value: 'user1' } });
 
@@ -27,12 +37,23 @@ describe('UsersList', () => {
         expect(screen.queryByText('user2')).not.toBeInTheDocument();
     });
 
-    it('shows empty table when no users match', () => {
+    it('shows empty state when no users match in active tab', () => {
         render(<UsersList profiles={mockProfiles} roles={mockRoles} />);
+
         const input = screen.getByPlaceholderText('ค้นหาชื่อผู้ใช้');
         fireEvent.change(input, { target: { value: 'NonExistent' } });
 
+        expect(screen.getByText('ไม่พบผู้ใช้ในหมวดนี้')).toBeInTheDocument();
+    });
+
+    it('search works in inactive tab', () => {
+        render(<UsersList profiles={mockProfiles} roles={mockRoles} />);
+        fireEvent.click(screen.getByText('ผู้ใช้ Inactive'));
+
+        const input = screen.getByPlaceholderText('ค้นหาชื่อผู้ใช้');
+        fireEvent.change(input, { target: { value: 'user2' } });
+
+        expect(screen.getByText('user2')).toBeInTheDocument();
         expect(screen.queryByText('user1')).not.toBeInTheDocument();
-        expect(screen.queryByText('user2')).not.toBeInTheDocument();
     });
 });

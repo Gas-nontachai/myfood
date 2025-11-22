@@ -32,23 +32,22 @@ jest.mock('../components/AuthStateProvider', () => ({
 
 describe('Layout Visibility Logic', () => {
     beforeEach(() => {
-        mockUsePathname.mockReturnValue('/dashboard');
+        mockUsePathname.mockReturnValue('/');
     });
 
     describe('computeShouldHideLayout', () => {
         it('should return true for login routes', () => {
             expect(computeShouldHideLayout('/login')).toBe(true);
-            expect(computeShouldHideLayout('/dashboard/login')).toBe(true);
+            expect(computeShouldHideLayout('/login')).toBe(true);
         });
 
         it('should return true for no-access routes', () => {
-            expect(computeShouldHideLayout('/dashboard/no-access')).toBe(true);
+            expect(computeShouldHideLayout('/no-access')).toBe(true);
             expect(computeShouldHideLayout('/account-disabled')).toBe(true);
         });
 
         it('should return false for normal dashboard routes', () => {
-            expect(computeShouldHideLayout('/dashboard')).toBe(false);
-            expect(computeShouldHideLayout('/dashboard/users')).toBe(false);
+            expect(computeShouldHideLayout('/')).toBe(false);
             expect(computeShouldHideLayout('/users')).toBe(false);
         });
     });
@@ -96,8 +95,8 @@ describe('Layout Visibility Logic', () => {
         });
 
         it('should show sidebar and header when props are false (default) and route is normal', () => {
-            // Mock usePathname to return /dashboard
-            mockUsePathname.mockReturnValue('/dashboard');
+            // Mock usePathname to return 
+            mockUsePathname.mockReturnValue('/');
 
             render(
                 <DashboardShell

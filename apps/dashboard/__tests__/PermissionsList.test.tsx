@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { PermissionsList } from '../app/dashboard/permissions/PermissionsList';
+import { PermissionsList } from '../app/(auth)/permissions/PermissionsList';
 
 const mockPermissions = [
     { id: 1, code: 'user.read', description: 'Read users' },

@@ -99,7 +99,7 @@ export async function loadCurrentUser(): Promise<SessionWithAuth | null> {
 export async function loginAction(formData: FormData) {
   const username = (formData.get('username') ?? '').toString().trim();
   const password = (formData.get('password') ?? '').toString();
-  const redirectTo = (formData.get('redirectTo') ?? '/dashboard').toString();
+  const redirectTo = (formData.get('redirectTo') ?? '/').toString();
 
   if (!username || !password) {
     redirect(

@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { RolesList } from '../app/dashboard/roles/RolesList';
+import { RolesList } from '../app/(auth)/roles/RolesList';
 
 const mockRoles = [
     { id: 1, name: 'Admin', description: 'Administrator' },

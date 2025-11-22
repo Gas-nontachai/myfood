@@ -32,14 +32,14 @@ import { computeShouldHideLayout } from '../app/layoutUtils';
 describe('layout and DashboardShell visibility', () => {
   test('computeShouldHideLayout returns true for /login', () => {
     expect(computeShouldHideLayout('/login')).toBe(true);
-    expect(computeShouldHideLayout('/dashboard/login')).toBe(true);
-    expect(computeShouldHideLayout('/dashboard/no-access')).toBe(true);
+    expect(computeShouldHideLayout('/login')).toBe(true);
+    expect(computeShouldHideLayout('/no-access')).toBe(true);
     expect(computeShouldHideLayout('/account-disabled')).toBe(true);
   });
 
   test('computeShouldHideLayout returns false for other routes', () => {
-    expect(computeShouldHideLayout('/dashboard')).toBe(false);
-    expect(computeShouldHideLayout('/dashboard/users')).toBe(false);
+    expect(computeShouldHideLayout('/')).toBe(false);
+    expect(computeShouldHideLayout('/users')).toBe(false);
   });
 
   test('DashboardShell hides header and sidebar when props set', () => {

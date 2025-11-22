@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { UsersList } from '../app/dashboard/users/UsersList';
+import { UsersList } from '../app/(auth)/users/UsersList';
 
 const mockProfiles = [
     { user_id: '1', username: 'user1', full_name: 'User One', status: 'active', role_primary: 1, created_at: '2023-01-01T00:00:00Z' },

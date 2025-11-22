@@ -42,7 +42,7 @@ export async function middleware(req: NextRequest) {
       .maybeSingle();
 
     if (role?.name !== "admin") {
-      url.pathname = "/dashboard/no-access";
+      url.pathname = "/no-access";
       return NextResponse.redirect(url);
     }
   }

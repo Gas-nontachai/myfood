@@ -38,7 +38,7 @@ const MENU_SECTIONS: MenuSection[] = [
     items: [
       {
         label: 'ภาพรวมระบบ',
-        href: '/dashboard',
+        href: '/',
         icon: <Home size={20} />
       }
     ]
@@ -48,12 +48,12 @@ const MENU_SECTIONS: MenuSection[] = [
     items: [
       {
         label: 'รายชื่อผู้ใช้',
-        href: '/dashboard/users',
+        href: '/users',
         icon: <Users size={20} />,
         match: (path) =>
-          path === '/dashboard/users' ||
-          (!!path?.startsWith('/dashboard/users/') &&
-            !path?.startsWith('/dashboard/users/create'))
+          path === '/users' ||
+          (!!path?.startsWith('/users/') &&
+            !path?.startsWith('/users/create'))
       }
     ]
   },
@@ -62,42 +62,40 @@ const MENU_SECTIONS: MenuSection[] = [
     items: [
       {
         label: 'บทบาทผู้ใช้งาน',
-        href: '/dashboard/roles',
+        href: '/roles',
         icon: <Shield size={20} />,
         match: (path) =>
-          path === '/dashboard/roles' ||
-          !!path?.startsWith('/dashboard/roles/')
+          path === '/roles' ||
+          !!path?.startsWith('/roles/')
       },
       {
         label: 'สิทธิ์การใช้งาน',
-        href: '/dashboard/permissions',
+        href: '/permissions',
         icon: <KeyRound size={20} />,
         match: (path) =>
-          path === '/dashboard/permissions' ||
-          !!path?.startsWith('/dashboard/permissions/')
+          path === '/permissions' ||
+          !!path?.startsWith('/permissions/')
       }
     ]
   }
 ];
 
 const breadcrumbLabels = {
-  '/dashboard': 'ภาพรวมระบบ',
-  '/dashboard/users': 'จัดการผู้ใช้',
-  '/dashboard/users/create': 'สร้างผู้ใช้ใหม่',
-  '/dashboard/users/[id]': 'โปรไฟล์ผู้ใช้',
-  '/dashboard/users/[id]/edit': 'แก้ไขบัญชี',
-  '/dashboard/roles': 'บทบาทผู้ใช้งาน',
-  '/dashboard/roles/create': 'สร้างบทบาทใหม่',
-  '/dashboard/roles/[id]/edit': 'แก้ไขบทบาท',
-  '/dashboard/permissions': 'สิทธิ์การใช้งาน',
-  '/dashboard/permissions/create': 'สร้างสิทธิ์ใหม่',
-  '/dashboard/permissions/[id]/edit': 'แก้ไขสิทธิ์',
-  '/dashboard/no-access': 'สิทธิ์ไม่เพียงพอ',
-  '/dashboard/login': 'เข้าสู่ระบบแอดมิน',
+  '/': 'ภาพรวมระบบ',
+  '/users': 'จัดการผู้ใช้',
+  '/users/create': 'สร้างผู้ใช้ใหม่',
+  '/users/[id]': 'โปรไฟล์ผู้ใช้',
+  '/users/[id]/edit': 'แก้ไขบัญชี',
+  '/roles': 'บทบาทผู้ใช้งาน',
+  '/roles/create': 'สร้างบทบาทใหม่',
+  '/roles/[id]/edit': 'แก้ไขบทบาท',
+  '/permissions': 'สิทธิ์การใช้งาน',
+  '/permissions/create': 'สร้างสิทธิ์ใหม่',
+  '/permissions/[id]/edit': 'แก้ไขสิทธิ์',
+  '/no-access': 'สิทธิ์ไม่เพียงพอ',
+  '/login': 'เข้าสู่ระบบแอดมิน',
   '/account-disabled': 'บัญชีถูกระงับ',
-  '/reports': 'รายงานประจำสัปดาห์',
-  '/users': 'รายชื่อผู้ใช้ POS',
-  '/users/[id]/edit': 'แก้ไขผู้ใช้ POS'
+  '/reports': 'รายงานประจำสัปดาห์', 
 };
 
 type DashboardShellProps = {
@@ -110,8 +108,8 @@ type DashboardShellProps = {
 const isMenuItemActive = (pathname: string | null, item: MenuItem) => {
   if (!pathname) return false;
 
-  if (item.href === '/dashboard') {
-    return pathname === '/dashboard';
+  if (item.href === '/') {
+    return pathname === '/';
   }
 
   if (typeof item.match === 'function') return item.match(pathname);
@@ -253,7 +251,7 @@ export function DashboardShell({
               <Breadcrumbs
                 labelMap={breadcrumbLabels}
                 rootLabel="ศูนย์ควบคุมแอดมิน"
-                rootHref="/dashboard"
+                rootHref="/"
                 className="mb-6"
               />
             </>

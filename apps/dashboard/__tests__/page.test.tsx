@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { DashboardHome } from '../app/dashboard/DashboardHome';
+import { DashboardHome } from '../components/DashboardHome';
 import type { SessionWithAuth } from '../lib/auth';
 
 const mockCurrentUser: SessionWithAuth = {

@@ -68,7 +68,7 @@ describe('Layout Visibility Logic', () => {
 
             // Sidebar should not be visible
             // The sidebar has text "เมนู"
-            expect(screen.queryByText('เมนู')).not.toBeInTheDocument();
+            expect(screen.queryByText('เมนูหลัก')).not.toBeInTheDocument();
 
             // Header should not be visible
             // The header has text "ศูนย์ควบคุมแอดมิน"
@@ -111,7 +111,7 @@ describe('Layout Visibility Logic', () => {
             );
 
             // Sidebar should be visible
-            expect(screen.getByText('เมนู')).toBeInTheDocument();
+            expect(screen.getByText('เมนูหลัก')).toBeInTheDocument();
 
             // Header should be visible
             expect(screen.getByText('ศูนย์ควบคุมแอดมิน')).toBeInTheDocument();

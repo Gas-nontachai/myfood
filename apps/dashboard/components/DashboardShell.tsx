@@ -34,7 +34,7 @@ type MenuSection = {
 
 const MENU_SECTIONS: MenuSection[] = [
   {
-    title: 'เมนู',
+    title: 'เมนูหลัก',
     items: [
       {
         label: 'ภาพรวมระบบ',

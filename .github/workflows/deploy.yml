@@ -1,0 +1,104 @@
+name: Build & Deploy (Selective)
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+
+    steps:
+      # -------------------------
+      # Checkout Code
+      # -------------------------
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # -------------------------
+      # Setup Node & PNPM
+      # -------------------------
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      # -------------------------
+      # Detect changed projects
+      # -------------------------
+      - name: Detect changed projects
+        id: changes
+        run: |
+          echo "customer=$(git diff --name-only HEAD~1 HEAD | grep '^apps/customer/' | wc -l)" >> $GITHUB_OUTPUT
+          echo "pos=$(git diff --name-only HEAD~1 HEAD | grep '^apps/pos/' | wc -l)" >> $GITHUB_OUTPUT
+          echo "admin=$(git diff --name-only HEAD~1 HEAD | grep '^apps/dashboard/' | wc -l)" >> $GITHUB_OUTPUT
+          echo "shared=$(git diff --name-only HEAD~1 HEAD | grep '^packages/' | wc -l)" >> $GITHUB_OUTPUT
+
+      - name: Summary change detection
+        run: |
+          echo "Customer changed: ${{ steps.changes.outputs.customer }}"
+          echo "POS changed: ${{ steps.changes.outputs.pos }}"
+          echo "Admin changed: ${{ steps.changes.outputs.admin }}"
+          echo "Shared packages changed: ${{ steps.changes.outputs.shared }}"
+
+      # -------------------------
+      # BUILD — selective
+      # -------------------------
+      - name: Build Customer
+        if: steps.changes.outputs.customer != '0' || steps.changes.outputs.shared != '0'
+        run: pnpm --filter @myfood/customer build
+
+      - name: Build POS
+        if: steps.changes.outputs.pos != '0' || steps.changes.outputs.shared != '0'
+        run: pnpm --filter @myfood/pos build
+
+      - name: Build Admin
+        if: steps.changes.outputs.admin != '0' || steps.changes.outputs.shared != '0'
+        run: |
+          pnpm --filter @myfood/dashboard build
+
+      # -------------------------
+      # DEPLOY — selective
+      # -------------------------
+
+      # CUSTOMER deploy
+      - name: Deploy Customer
+        if: steps.changes.outputs.customer != '0' || steps.changes.outputs.shared != '0'
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_CUSTOMER }}
+        run: |
+          npx vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
+          npx vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
+          npx vercel deploy --prebuilt --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
+
+      # POS deploy
+      - name: Deploy POS
+        if: steps.changes.outputs.pos != '0' || steps.changes.outputs.shared != '0'
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_POS }}
+        run: |
+          npx vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
+          npx vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
+          npx vercel deploy --prebuilt --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
+
+      # ADMIN deploy
+      - name: Deploy Admin
+        if: steps.changes.outputs.admin != '0' || steps.changes.outputs.shared != '0'
+        env:
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_ADMIN }}
+        run: |
+          npx vercel pull --yes --environment=production --token ${{ secrets.VERCEL_TOKEN }}
+          npx vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
+          npx vercel deploy --prebuilt --prod --yes --token ${{ secrets.VERCEL_TOKEN }}

@@ -4,7 +4,7 @@
   "private": true,
   "description": "Operational dashboard for managers.",
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "next dev -p 3001 -H dashboard.local",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

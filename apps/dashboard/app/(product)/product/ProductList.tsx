@@ -231,20 +231,13 @@ export function ProductList({
                   </td>
 
                   <td className="px-3 py-3">
-                    {product.categories.length > 0 ? (
-                      <div className="flex flex-wrap gap-1 text-xs font-medium text-slate-700">
-                        {product.categories.map((category) => (
-                          <span
-                            key={`${product.id}-category-${category.id}`}
-                            className="rounded-full bg-slate-100 px-2 py-0.5"
-                          >
-                            {category.name}
-                          </span>
-                        ))}
-                      </div>
-                    ) : (
-                      <span className="text-slate-400">ยังไม่จัดหมวดหมู่</span>
-                    )}
+                    <div className="flex flex-wrap gap-1 text-xs font-medium text-slate-700">
+                      <span
+                        className="rounded-full bg-slate-100 px-2 py-0.5"
+                      >
+                        {categories.find((category) => String(product.product_type) === String(category.id))?.name ?? 'ไม่ระบุประเภทสินค้า'}
+                      </span>
+                    </div>
                   </td>
 
                   <td className="px-3 py-3">

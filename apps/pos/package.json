@@ -4,7 +4,7 @@
   "private": true,
   "description": "Tablet-first POS for in-venue operators.",
   "scripts": {
-    "dev": "next dev -p 3002",
+    "dev": "next dev -p 3002 -H pos.local",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -19,10 +19,12 @@
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.39.7",
     "@logtail/node": "^0.3.2",
+    "lucide-react": "^0.554.0",
     "next": "15.0.0",
     "posthog-js": "^1.77.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "zustand": "^4.4.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.40.0",
